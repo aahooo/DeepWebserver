@@ -1,5 +1,5 @@
 def main(args , details):
-    import random,webserver
+    import random,webserver,os
     from PIL import Image,ImageFont,ImageDraw
     from webserver import GetRandom
     file = open("captcha_logs/"+details['Address'][0],'w')
@@ -12,9 +12,13 @@ def main(args , details):
     fnt = ImageFont.truetype('Fonts/BOOKOSB.TTF', 15)
     d = ImageDraw.Draw(img)
     d.text((10,10), rand , font=fnt, fill=(255, 255, 0))
-    img.save(rand+'.png')
+    img.save(name)
+    img = bytes()
+    
+    with open(name,'rb') as image:
+        img = image.read()
+    os.remove(name)
 
-    #image = 
 
 
     return [img, webserver.connection_status.Closed , 200 , webserver.FILETYPES.get('jpg')]
