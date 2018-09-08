@@ -256,7 +256,7 @@ def SocketHandler(sock , address):
         try:
             message = sock.recv(2048)
         except OSError :
-
+            print("socket died")
             return
 
         if len(message)==0:
@@ -268,9 +268,9 @@ def SocketHandler(sock , address):
         #if message["connection"]!="keep-alive":return
         if message["method"]=="GET": GetHandler(sock, message)
         elif message["method"]=="POST": PostHandler(sock, message)
+        break
         #print("message sent")
-
-
+    print("socket died")
 
 if __name__ == "__main__":
     Config = LoadConfig()
