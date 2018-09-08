@@ -84,6 +84,7 @@ def RunFile(sock , args , details , recursion = 0):
         #Importing Asked module
         file = importlib.import_module(file.replace("/","."))
         message = file.main(args , details)
+        file = None
     except AttributeError:
         #File Cannot Be opened (Does not have main function or has runtime error)
         Show404Page(sock , details)
