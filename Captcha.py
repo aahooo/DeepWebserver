@@ -8,10 +8,22 @@ def main(args , details):
     file.write(rand)
     file.close()
     
-    img = Image.new('RGB', (100, 30), color = (73, 109, 137))
-    fnt = ImageFont.truetype('Fonts/BOOKOSB.TTF', 15)
+    img = Image.new('RGB', (100, 30), color = (73, 0, 137))
+    font_name = random.choice(os.listdir("Fonts"))
+    fnt = ImageFont.truetype('Fonts/'+font_name, 15)
     d = ImageDraw.Draw(img)
     d.text((10,10), rand , font=fnt, fill=(255, 255, 0))
+    number_of_lines = random.choice((1,2,3))
+    for i in range(number_of_lines):
+        x1 = random.randrange(0, 75)
+        y1 = random.randrange(0, 30)
+        x2 = random.randrange(25, 100)
+        y2 = random.randrange(0, 30)
+        d.line(( (x1,y1) , (x2,y2) ) , width = 2)
+
+
+
+        
     img.save(name)
     img = bytes()
     
