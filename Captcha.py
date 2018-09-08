@@ -7,12 +7,14 @@ def main(args , details):
     name = os.environ['temp']+"\\"+GetRandom(16)+'.jpg'
     file.write(rand)
     file.close()
+    background = ( random.randrange(0,255) , random.randrange(0,255) , random.randrange(0,255) )
+    foreground = ( random.randrange(0,255) , random.randrange(0,255) , random.randrange(0,255) )
     
-    img = Image.new('RGB', (100, 30), color = (73, 0, 137))
+    img = Image.new('RGB', (100, 30), color = background)
     font_name = random.choice(os.listdir("Fonts"))
-    fnt = ImageFont.truetype('Fonts/'+font_name, 15)
+    fnt = ImageFont.truetype('Fonts/'+font_name,encoding = "utf-8" , size = 15)
     d = ImageDraw.Draw(img)
-    d.text((10,10), rand , font=fnt, fill=(255, 255, 0))
+    d.text((10,10), rand , font=fnt, fill=foreground , spacing = 2 )
     number_of_lines = random.choice((1,2,3))
     for i in range(number_of_lines):
         x1 = random.randrange(0, 75)
