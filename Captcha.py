@@ -3,7 +3,8 @@ def main(args , details):
     from PIL import Image,ImageFont,ImageDraw
     from webserver import GetRandom
     file = open("captcha_logs/"+details['Address'][0],'w')
-    rand = GetRandom(6)
+    rand_len = random.choice( ( 6,8,10   ) )
+    rand = GetRandom(rand_len)
     name = os.environ['temp']+"\\"+GetRandom(16)+'.jpg'
     file.write(rand)
     file.close()
