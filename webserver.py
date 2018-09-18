@@ -5,7 +5,8 @@ import os,sys
 
 STAT_MEANING={
     200 : "OK",
-    404 : "FUCK"
+    404 : "FUCK",
+    400 : "INV"
     }
 FILETYPES = {
     "txt" : "text/html",
