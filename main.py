@@ -67,7 +67,6 @@ def RunFile(sock , args , details , recursion = 0):
     #Checking if the asked File Exist's or not
     if file == "/":
         #User is asking for main index
-        print (Config.get("INDEX_FILE"))
         file = Config.get("INDEX_FILE")
     else:
         file = webserver.HashToAddress(file)
