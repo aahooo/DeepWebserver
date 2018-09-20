@@ -8,6 +8,10 @@ import os
 import importlib
 BLOCKED_IP = []
 
+if "win" in sys.platform:
+    SLASH = "\\"
+else:
+    SLASH = "/"
 
 
 
@@ -81,7 +85,7 @@ def RunFile(sock , args , details , recursion = 0):
     
     try:
         #Importing Asked module
-        file = importlib.import_module(file.replace("/","."))
+        file = importlib.import_module(file.replace(SLASH,"."))
         message = file.main(args , details)
         file = None
     except AttributeError:
