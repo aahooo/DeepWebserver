@@ -16,6 +16,8 @@ else:
 
 
 
+
+
 def LoadConfig(conf = "config.conf"):
     conf_raw = open(conf).read().split("\n")
     if "" in conf_raw: conf_raw.remove("")
@@ -26,13 +28,27 @@ def LoadConfig(conf = "config.conf"):
 
     if config["403_PAGE"] == "" : config["403_PAGE"] = config["404_PAGE"]
 
-    if config["ORIGIN"] not in config["403_PAGE"] or config["ORIGIN"] not in config["404_PAGE"] or config["ORIGIN"] not in config["INDEX_FILE"]:
-        print("Check Default Pages in Config File")
-        sys.exit()
-    config["403_PAGE"] = config["403_PAGE"].split(config["ORIGIN"])[-1]
-    config["404_PAGE"] = config["404_PAGE"].split(config["ORIGIN"])[-1]
-    config["INDEX_FILE"] = config["INDEX_FILE"].split(config["ORIGIN"])[-1]
     return config
+
+
+def Control_listener():
+    sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    sock.bind(("",666))
+    sock.listen()
+    try:
+        while True:
+            address , client = sock.accept()
+            if not webserver.is_tor(address[0]):
+                client.close()
+                continue
+            
+
+
+    except Exception as exception:
+        print(str(exception))
+        pass
+
+
 
 
 def TakeArgs(raw_string):
@@ -81,15 +97,19 @@ def RunFile(sock , args , details , recursion = 0):
 
 
     #Detaching file format from file name
-    file = file[:file[::-1].find(".")*-1-1]
+    file = file[:len(file)-file[::-1].find('.')-1]
     
     try:
         #Importing Asked module
-        file = importlib.import_module(file.replace(SLASH,"."))
+        print(file)
+        file = file.replace("/",".")
+        file = file.replace("\\",".")
+        file = importlib.import_module(file)
         message = file.main(args , details)
         importlib.reload(file)
-    except AttributeError:
+    except Exception as exception:
         #File Cannot Be opened (Does not have main function or has runtime error)
+        print(str(exception))
         Show404Page(sock , details)
         return
         
@@ -176,7 +196,7 @@ def SendHTTPHeaders(sock , details , status_code , Content_size , Content_type ,
     return
 
 def SendFile(sock , file, details, connection_status, status_code):
-    if len(file.split("."))!=2 or webserver.FILETYPES.get(file.split(".")[-1])==None : file_type = "text/html"
+    if len(file.split("."))!=2 or webserver.FILETYPES.get(file.split(".")[-1])==None : file_type = "unk"
     else: file_type = webserver.FILETYPES[file.split(".")[-1].lower()]
 
     if file_type == "text/html":
@@ -286,9 +306,10 @@ if __name__ == "__main__":
     while True:
         try:
             client , address = sock.accept()
-            print("socket created")
+            #print("socket created")
             if address[0] in BLOCKED_IP: continue
             threading._start_new_thread(SocketHandler , (client,address))
+            #print(threading.active_count())
             continue
         except KeyboardInterrupt:
             sys.exit()

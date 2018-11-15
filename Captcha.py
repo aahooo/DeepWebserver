@@ -29,7 +29,7 @@ def main(args , details):
 
 
 
-            
+        img.thumbnail((150,150), Image.ANTIALIAS)
         img.save(name)                  #saving image on temporary file then sending it to client
         img = bytes()
         

@@ -1,7 +1,11 @@
+import urllib.request
 import socket
 import random
 import hashlib
 import os,sys
+import re
+
+TOR_CHECK_URL = "https://torstatus.rueckgr.at/"
 
 STAT_MEANING={
     200 : "OK",
@@ -40,9 +44,8 @@ def sha256(string):
 
 def NameToHash(string, location=""):
     begining_loc = os.getcwd()
-    if location!="" :os.chdir(location)
-    contains = os.listdir()
-    os.chdir(begining_loc)
+    if location!="" :contains = os.listdir(location)
+    else :contains = os.listdir()
     temp=""
     if not(string in contains):
         return False
@@ -51,10 +54,14 @@ def NameToHash(string, location=""):
     temp+=string
     
     rand = GetRandom(2)
-    #Zfill makes sure that random string has total length of 2
 
     temp = rand + temp + rand
     return rand+(sha256(temp)[:8])
+
+def is_tor(ip):
+    response = urllib.request.urlopen(TOR_CHECK_URL)
+    response = response.read()
+    return ip in response.decode()
 
 def HashToName(cipher, location=False):
     begining_loc = os.getcwd()
@@ -125,6 +132,17 @@ def HideLinks(message):
         if temp:
             links[i] = 'href="'+links[i]+'"'
             temp = 'href="'+temp+'"'
+            message = message.replace(links[i] , temp)
+
+
+    links = message.split('src="')
+    links = links[1:]
+    for i in range(len(links)):
+        links[i] = links[i].split('"')[0]
+        temp = AddressToHash(links[i].split('"')[0])
+        if temp:
+            links[i] = 'src="'+links[i]+'"'
+            temp = 'src="'+temp+'"'
             message = message.replace(links[i] , temp)
 
     
